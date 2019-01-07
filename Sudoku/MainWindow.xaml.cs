@@ -40,39 +40,47 @@ namespace Sudoku
             {
                 for (var j = 0; j < OuterWidth; j++)
                 {
-                    var left = j % InnerWidth == 0 ? Thick : Thin;
-                    var top = i % InnerWidth == 0 ? Thick : Thin;
-                    var right = j == OuterWidth - 1 ? Thick : 0;
-                    var bottom = i == OuterWidth - 1 ? Thick : 0;
-
-                    var border = new Border
-                    {
-                        BorderThickness = new Thickness(left, top, right, bottom),
-                        BorderBrush = Brushes.Black
-                    };
-
-                    var textBox = new TextBox
-                    {
-                        VerticalAlignment = VerticalAlignment.Center,
-                        HorizontalAlignment = HorizontalAlignment.Center
-                    };
-
-                    var binding = new Binding
-                    {
-                        Source = ViewModel,
-                        Path = new PropertyPath($"[{i},{j}]"),
-                        Mode = BindingMode.TwoWay
-                    };
-
-                    textBox.SetBinding(TextBox.TextProperty, binding);
-
-                    border.Child = textBox;
-
+                    var border = CreateBorder(i, j);
+                    border.Child = CreateTextBox(i, j);
                     grid.Children.Add(border);
                 }
             }
 
             SudokuTable.Child = grid;
+        }
+
+        private static Border CreateBorder(int i, int j)
+        {
+            var left = j % InnerWidth == 0 ? Thick : Thin;
+            var top = i % InnerWidth == 0 ? Thick : Thin;
+            var right = j == OuterWidth - 1 ? Thick : 0;
+            var bottom = i == OuterWidth - 1 ? Thick : 0;
+
+            return new Border
+            {
+                BorderThickness = new Thickness(left, top, right, bottom),
+                BorderBrush = Brushes.Black
+            };
+        }
+
+        private TextBox CreateTextBox(int i, int j)
+        {
+            var textBox = new TextBox
+            {
+                VerticalAlignment = VerticalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Center
+            };
+
+            var binding = new Binding
+            {
+                Source = ViewModel,
+                Path = new PropertyPath($"[{i},{j}]"),
+                Mode = BindingMode.TwoWay
+            };
+
+            textBox.SetBinding(TextBox.TextProperty, binding);
+
+            return textBox;
         }
     }
 }
