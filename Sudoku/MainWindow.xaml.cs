@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using System.Windows.Media;
 
 namespace Sudoku
@@ -16,7 +17,15 @@ namespace Sudoku
         public MainWindow()
         {
             InitializeComponent();
+            InitializeViewModel();
             InitializeSudokuTable();
+        }
+
+        public SudokuViewModel ViewModel => (SudokuViewModel)DataContext;
+
+        private void InitializeViewModel()
+        {
+            DataContext = new SudokuViewModel(OuterWidth);
         }
 
         private void InitializeSudokuTable()
@@ -41,6 +50,23 @@ namespace Sudoku
                         BorderThickness = new Thickness(left, top, right, bottom),
                         BorderBrush = Brushes.Black
                     };
+
+                    var textBox = new TextBox
+                    {
+                        VerticalAlignment = VerticalAlignment.Center,
+                        HorizontalAlignment = HorizontalAlignment.Center
+                    };
+
+                    var binding = new Binding
+                    {
+                        Source = ViewModel,
+                        Path = new PropertyPath($"[{i},{j}]"),
+                        Mode = BindingMode.TwoWay
+                    };
+
+                    textBox.SetBinding(TextBox.TextProperty, binding);
+
+                    border.Child = textBox;
 
                     grid.Children.Add(border);
                 }
